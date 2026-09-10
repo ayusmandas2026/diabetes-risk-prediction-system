@@ -20,5 +20,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Streamlit Cache
-.streamlit/
+# Streamlit Secrets & Cache
+.streamlit/secrets.toml
