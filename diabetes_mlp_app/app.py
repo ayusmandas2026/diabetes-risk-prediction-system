@@ -26,7 +26,7 @@ st.set_page_config(
 
 @st.cache_resource
 def load_artifacts():
-    model = load_model(BASE_DIR / "final_mlp_model.keras")
+    model = load_model(BASE_DIR / "final_mlp_model.keras", compile=False)
     scaler = joblib.load(BASE_DIR / "scaler.joblib")
     median_imp = joblib.load(BASE_DIR / "median_imputer.joblib")
     knn_imp = joblib.load(BASE_DIR / "knn_imputer.joblib")
