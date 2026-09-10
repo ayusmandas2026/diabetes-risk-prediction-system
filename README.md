@@ -1,8 +1,8 @@
 # 🩺 Diabetes Risk Prediction System
 ### *Multilayer Perceptron (MLP) Neural Network & Machine Learning Benchmark*
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Streamlit_App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://diabetes-risk-prediction-system-mlp.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 [![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)](#)
@@ -133,6 +133,8 @@ streamlit run diabetes_mlp_app/app.py
 ```
 
 Open your browser at `http://localhost:8501` to view and interact with the application.
+
+> **Live Cloud App**: You can also try the deployed app directly without local setup at **[diabetes-risk-prediction-system-mlp.streamlit.app](https://diabetes-risk-prediction-system-mlp.streamlit.app/)**.
 
 ---
 

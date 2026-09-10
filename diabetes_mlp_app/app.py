@@ -253,7 +253,11 @@ with st.form("prediction_form"):
             key="age"
         )
 
-    submitted = st.form_submit_button("🔍 Compute Diabetes Risk Assessment", use_container_width=True)
+    submitted = st.form_submit_button(
+        "🔍 Compute Diabetes Risk Assessment",
+        type="primary",
+        use_container_width=True
+    )
 
 # --------------------------------------------------
 # Prediction & Clinical Interpretation
