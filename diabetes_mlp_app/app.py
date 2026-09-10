@@ -6,7 +6,7 @@ import joblib
 from tensorflow.keras.models import load_model
 
 # --------------------------------------------------
-# Robust Base Directory Resolution
+# Base Directory Resolution
 # --------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -14,254 +14,202 @@ BASE_DIR = Path(__file__).resolve().parent
 # Page Configuration
 # --------------------------------------------------
 st.set_page_config(
-    page_title="DiaGuard AI — Diabetes Risk Intelligence",
+    page_title="Clinical Diabetes Risk Assessment Tool",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # --------------------------------------------------
-# Advanced Custom Styling (CSS & Glassmorphism)
+# Professional Healthcare UI Styling (Clean & Clinical)
 # --------------------------------------------------
 st.markdown("""
 <style>
-    /* Google Fonts Import */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
+    /* Clean System Typography */
     html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #0f172a;
     }
 
-    /* Radiant Background Gradient */
+    /* Subtle, Elegant Background Gradient */
     [data-testid="stAppViewContainer"] {
         background: 
-            radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
-            radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-            linear-gradient(145deg, #070a12 0%, #0d1322 45%, #070a12 100%) !important;
-        color: #f1f5f9;
+            radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.7) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(238, 242, 255, 0.7) 0px, transparent 50%),
+            linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+        color: #0f172a;
     }
 
     [data-testid="stHeader"] {
         background: transparent !important;
     }
 
-    /* Sidebar Styling */
+    /* Professional Sidebar */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(13, 19, 34, 0.95) 0%, rgba(7, 10, 18, 0.98) 100%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-        backdrop-filter: blur(20px);
+        background-color: #ffffff !important;
+        border-right: 1px solid #e2e8f0 !important;
     }
 
-    /* Main Form Card */
+    /* Main Clinical Card Form */
     [data-testid="stForm"] {
-        background: rgba(17, 24, 39, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 24px !important;
-        padding: 2.25rem !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.08) !important;
-        backdrop-filter: blur(20px) !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 14px !important;
+        padding: 2rem !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
     }
 
-    /* Input Fields */
+    /* Clean Input Fields */
     div[data-baseweb="input"], div[data-baseweb="base-input"] {
-        background: rgba(30, 41, 59, 0.65) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 12px !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        color: #f8fafc !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
 
     div[data-baseweb="input"]:focus-within {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
-        background: rgba(30, 41, 59, 0.9) !important;
+        border-color: #0284c7 !important;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
     }
 
     input {
-        color: #f8fafc !important;
+        color: #0f172a !important;
         font-weight: 500 !important;
     }
 
-    /* Primary Action Button */
+    /* Primary Submit Button */
     button[kind="primary"] {
-        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 14px !important;
-        font-weight: 700 !important;
-        font-size: 1.05rem !important;
-        letter-spacing: 0.02em !important;
-        padding: 0.85rem 2rem !important;
-        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4), 0 0 20px rgba(6, 182, 212, 0.25) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        padding: 0.75rem 1.75rem !important;
+        box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2) !important;
+        transition: background-color 0.15s ease, transform 0.1s ease !important;
     }
 
     button[kind="primary"]:hover {
-        transform: translateY(-2px) scale(1.008) !important;
-        box-shadow: 0 15px 35px -5px rgba(79, 70, 229, 0.6), 0 0 30px rgba(6, 182, 212, 0.4) !important;
+        background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+        transform: translateY(-1px) !important;
     }
 
     /* Secondary Preset Buttons */
     button[kind="secondary"] {
-        background: rgba(30, 41, 59, 0.5) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        color: #e2e8f0 !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        color: #334155 !important;
         font-weight: 500 !important;
-        transition: all 0.25s ease !important;
+        font-size: 0.9rem !important;
+        transition: all 0.15s ease !important;
     }
 
     button[kind="secondary"]:hover {
-        background: rgba(51, 65, 85, 0.8) !important;
-        border-color: rgba(99, 102, 241, 0.5) !important;
-        color: #ffffff !important;
-        transform: translateY(-1px) !important;
+        background-color: #f1f5f9 !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
     }
 
-    /* Hero Header */
-    .hero-container {
-        text-align: center;
-        padding: 1.5rem 1rem 2rem 1rem;
-        margin-bottom: 0.5rem;
+    /* Header Banner */
+    .portal-header {
+        padding: 1rem 0 1.5rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 1.5rem;
     }
 
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.4rem 1.1rem;
-        font-size: 0.78rem;
+    .portal-title {
+        font-size: 2.1rem;
         font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #38bdf8;
-        background: rgba(56, 189, 248, 0.1);
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        border-radius: 9999px;
-        margin-bottom: 1rem;
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
-    .hero-title {
-        font-size: 3rem;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        background: linear-gradient(135deg, #ffffff 20%, #93c5fd 60%, #c084fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
-        line-height: 1.15;
-    }
-
-    .hero-subtitle {
-        font-size: 1.05rem;
-        color: #94a3b8;
-        max-width: 700px;
-        margin: 0 auto 1.5rem auto;
+    .portal-subtitle {
+        font-size: 0.98rem;
+        color: #64748b;
+        margin: 0;
         line-height: 1.5;
     }
 
-    .disclaimer-pill {
-        display: inline-block;
-        padding: 0.4rem 1rem;
-        font-size: 0.82rem;
-        color: #fcd34d;
-        background: rgba(245, 158, 11, 0.1);
-        border: 1px solid rgba(245, 158, 11, 0.25);
-        border-radius: 12px;
+    .notice-box {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #0284c7;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        color: #475569;
         margin-bottom: 1.5rem;
     }
 
-    /* Assessment Output Cards */
-    .assessment-card {
-        border-radius: 20px;
-        padding: 2rem;
-        margin-top: 1.75rem;
-        margin-bottom: 1.5rem;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        animation: fadeIn 0.4s ease-out;
+    /* Clinical Outcome Cards */
+    .outcome-card {
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+    .outcome-low {
+        background-color: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #065f46;
     }
 
-    .assessment-low {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%);
-        border-color: rgba(16, 185, 129, 0.4);
-        box-shadow: 0 15px 35px -10px rgba(16, 185, 129, 0.25);
+    .outcome-moderate {
+        background-color: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
     }
 
-    .assessment-moderate {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.05) 100%);
-        border-color: rgba(245, 158, 11, 0.4);
-        box-shadow: 0 15px 35px -10px rgba(245, 158, 11, 0.25);
+    .outcome-high {
+        background-color: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #9f1239;
     }
 
-    .assessment-high {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.06) 100%);
-        border-color: rgba(239, 68, 68, 0.45);
-        box-shadow: 0 15px 35px -10px rgba(239, 68, 68, 0.3);
-    }
-
-    .metric-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 1.25rem 1rem;
+    /* Metric Summary Boxes */
+    .stat-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
         text-align: center;
-        backdrop-filter: blur(10px);
     }
 
-    .metric-title {
-        font-size: 0.78rem;
+    .stat-label {
+        font-size: 0.75rem;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #94a3b8;
-        margin-bottom: 0.35rem;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.25rem;
     }
 
-    .metric-number {
-        font-size: 2rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
+    .stat-value {
+        font-size: 1.85rem;
+        font-weight: 700;
     }
 
-    .chip-warning {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(239, 68, 68, 0.12);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 10px;
-        padding: 0.6rem 1rem;
-        color: #fca5a5;
-        font-size: 0.88rem;
+    .badge-pill {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.82rem;
         font-weight: 500;
-        margin: 0.3rem 0.3rem 0.3rem 0;
-    }
-
-    .chip-info {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(245, 158, 11, 0.12);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        border-radius: 10px;
-        padding: 0.6rem 1rem;
-        color: #fde047;
-        font-size: 0.88rem;
-        font-weight: 500;
-        margin: 0.3rem 0.3rem 0.3rem 0;
+        border-radius: 6px;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# Load Trained Model & Preprocessing Artifacts
+# Model & Pipeline Artifacts
 # --------------------------------------------------
 @st.cache_resource
 def load_artifacts():
@@ -272,9 +220,6 @@ def load_artifacts():
     feature_columns = joblib.load(BASE_DIR / "feature_columns.joblib")
     return model, scaler, median_imp, knn_imp, feature_columns
 
-# --------------------------------------------------
-# Feature Engineering (Exact Match with Pipeline)
-# --------------------------------------------------
 def engineer_features(data):
     data = data.copy()
 
@@ -311,10 +256,10 @@ def engineer_features(data):
 model, scaler, median_imp, knn_imp, feature_columns = load_artifacts()
 
 # --------------------------------------------------
-# Clinical Benchmark Presets
+# Standardized Patient Profiles
 # --------------------------------------------------
 PRESET_PROFILES = {
-    "🟢 Healthy / Low Risk": {
+    "Profile 1: Normal Findings": {
         "pregnancies": 1,
         "glucose": 88.0,
         "blood_pressure": 68.0,
@@ -324,7 +269,7 @@ PRESET_PROFILES = {
         "dpf": 0.25,
         "age": 25
     },
-    "🟡 Borderline / Pre-diabetic": {
+    "Profile 2: Borderline / Prediabetic": {
         "pregnancies": 2,
         "glucose": 118.0,
         "blood_pressure": 76.0,
@@ -334,7 +279,7 @@ PRESET_PROFILES = {
         "dpf": 0.45,
         "age": 42
     },
-    "🔴 High Risk Diabetic": {
+    "Profile 3: Elevated Risk / Diabetic": {
         "pregnancies": 6,
         "glucose": 178.0,
         "blood_pressure": 86.0,
@@ -346,18 +291,18 @@ PRESET_PROFILES = {
     }
 }
 
-# Session state initialization
-default_profile = PRESET_PROFILES["🟡 Borderline / Pre-diabetic"]
+# State initialization
+default_profile = PRESET_PROFILES["Profile 2: Borderline / Prediabetic"]
 for key, val in default_profile.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
 # --------------------------------------------------
-# Sidebar Configuration
+# Sidebar (Controls & References)
 # --------------------------------------------------
 with st.sidebar:
-    st.markdown("### ⚡ Clinical Presets")
-    st.caption("One-click benchmark test profiles:")
+    st.subheader("Patient Profiles (Test Cases)")
+    st.caption("Load benchmark clinical data:")
 
     for p_name, p_data in PRESET_PROFILES.items():
         if st.button(p_name, use_container_width=True):
@@ -365,85 +310,86 @@ with st.sidebar:
                 st.session_state[k] = v
             st.rerun()
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("### ⚙️ Diagnostic Sensitivity")
+    st.divider()
 
+    st.subheader("Decision Threshold")
     threshold = st.slider(
-        "Decision Cutoff",
+        "Classification Cutoff",
         min_value=0.20,
         max_value=0.80,
         value=0.50,
         step=0.05,
-        help="Adjust the classification boundary. Lower thresholds (e.g. 0.35-0.40) maximize sensitivity/recall for screening."
+        help="Standard cutoff is 0.50. Lower thresholds (0.35 - 0.40) increase sensitivity for preliminary screening."
     )
 
     if threshold < 0.50:
-        st.markdown("<div style='color: #38bdf8; font-size: 0.85rem;'>🩺 <b>High Sensitivity Mode</b>: Prioritizes catching potential cases early.</div>", unsafe_allow_html=True)
+        st.caption("🩺 **High Sensitivity Setting**: Maximizes early detection rate.")
     elif threshold > 0.50:
-        st.markdown("<div style='color: #a78bfa; font-size: 0.85rem;'>🎯 <b>High Specificity Mode</b>: Minimizes false alarms.</div>", unsafe_allow_html=True)
+        st.caption("🎯 **High Specificity Setting**: Reduces false-positive indications.")
     else:
-        st.markdown("<div style='color: #94a3b8; font-size: 0.85rem;'>⚖️ <b>Standard Balanced Mode</b> (0.50 cutoff).</div>", unsafe_allow_html=True)
+        st.caption("⚖️ **Standard Setting** (0.50 balanced threshold).")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    with st.expander("📋 Medical Reference Ranges", expanded=False):
+    st.divider()
+
+    with st.expander("Reference Standards (ADA / WHO)", expanded=True):
         st.markdown("""
-        **Fasting Glucose:**
+        **Fasting Blood Glucose:**
         - Normal: `< 100 mg/dL`
         - Prediabetes: `100 - 125 mg/dL`
         - Diabetes: `≥ 126 mg/dL`
 
         **Body Mass Index (BMI):**
-        - Normal: `18.5 - 24.9`
+        - Normal weight: `18.5 - 24.9`
         - Overweight: `25.0 - 29.9`
         - Obese: `≥ 30.0`
 
-        **Blood Pressure (Diastolic):**
+        **Diastolic Blood Pressure:**
         - Normal: `< 80 mm Hg`
-        - Stage 1: `80 - 89 mm Hg`
-        - Stage 2: `≥ 90 mm Hg`
+        - Pre-hypertension: `80 - 89 mm Hg`
+        - Hypertension: `≥ 90 mm Hg`
         """)
 
 # --------------------------------------------------
-# Hero Header Banner
+# Header & Medical Notice
 # --------------------------------------------------
 st.markdown("""
-<div class="hero-container">
-    <div class="hero-badge">✨ Clinical Neural Intelligence</div>
-    <div class="hero-title">Diabetes Risk Assessment</div>
-    <div class="hero-subtitle">
-        Powered by an Optuna-tuned Multilayer Perceptron (MLP) trained on the Pima Clinical Diabetes dataset.
+<div class="portal-header">
+    <div class="portal-title">
+        <span>🩺</span> Diabetes Risk Assessment Tool
     </div>
-    <div class="disclaimer-pill">
-        ⚠️ Academic & Demonstration Prototype • Not a Certified Diagnostic Device
-    </div>
+    <p class="portal-subtitle">
+        Clinical risk stratification system using a Multilayer Perceptron (MLP) trained on the Pima Indians Diabetes benchmark dataset.
+    </p>
+</div>
+<div class="notice-box">
+    <strong>Educational & Demonstration Prototype:</strong> This tool is developed for academic evaluation. Predictions provide statistical risk estimates and are not a substitute for clinical laboratory evaluation.
 </div>
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# Patient Input Form
+# Input Form
 # --------------------------------------------------
-with st.form("clinical_form"):
-    st.markdown("#### 🩺 Patient Biomarkers")
-    st.caption("Enter patient measurements below or select a preset from the sidebar.")
+with st.form("patient_form"):
+    st.markdown("#### Patient Biomarkers")
 
-    col1, col2 = st.columns(2, gap="large")
+    col1, col2 = st.columns(2)
 
     with col1:
         pregnancies = st.number_input(
-            "Pregnancies (count)",
+            "Pregnancies",
             min_value=0,
             max_value=20,
             step=1,
             key="pregnancies",
-            help="Total number of pregnancies"
+            help="Total number of pregnancies recorded"
         )
 
         glucose = st.number_input(
-            "Fasting Glucose (mg/dL)",
+            "Fasting Plasma Glucose (mg/dL)",
             min_value=1.0,
             max_value=300.0,
             key="glucose",
-            help="Plasma glucose concentration at 2 hours in an oral glucose tolerance test"
+            help="Fasting plasma glucose level (mg/dL)"
         )
 
         blood_pressure = st.number_input(
@@ -451,7 +397,7 @@ with st.form("clinical_form"):
             min_value=1.0,
             max_value=200.0,
             key="blood_pressure",
-            help="Diastolic blood pressure"
+            help="Diastolic blood pressure (mm Hg)"
         )
 
         skin_thickness = st.number_input(
@@ -459,7 +405,7 @@ with st.form("clinical_form"):
             min_value=0.0,
             max_value=100.0,
             key="skin_thickness",
-            help="Triceps skinfold thickness"
+            help="Triceps skinfold measurement (mm)"
         )
 
     with col2:
@@ -468,23 +414,23 @@ with st.form("clinical_form"):
             min_value=0.0,
             max_value=900.0,
             key="insulin",
-            help="2-Hour serum insulin"
+            help="Serum insulin after 2 hours (μU/mL)"
         )
 
         bmi = st.number_input(
-            "Body Mass Index — BMI (kg/m²)",
+            "Body Mass Index (BMI, kg/m²)",
             min_value=1.0,
             max_value=70.0,
             key="bmi",
-            help="Body mass index (weight in kg / height in m²)"
+            help="Body Mass Index in kg/m²"
         )
 
         dpf = st.number_input(
-            "Diabetes Pedigree Function (family history)",
+            "Diabetes Pedigree Function (DPF)",
             min_value=0.01,
             max_value=3.0,
             key="dpf",
-            help="Genetic risk factor score based on family history"
+            help="Calculated score reflecting hereditary risk factor"
         )
 
         age = st.number_input(
@@ -493,14 +439,14 @@ with st.form("clinical_form"):
             max_value=100,
             step=1,
             key="age",
-            help="Patient age (minimum 21 in Pima dataset)"
+            help="Patient age (minimum 21 years)"
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    submitted = st.form_submit_button("⚡ Compute Clinical Risk Assessment", type="primary", use_container_width=True)
+    submitted = st.form_submit_button("Calculate Risk Assessment", type="primary", use_container_width=True)
 
 # --------------------------------------------------
-# Inference & Visual Presentation
+# Results Presentation
 # --------------------------------------------------
 if submitted:
     raw = pd.DataFrame([{
@@ -526,98 +472,94 @@ if submitted:
     probability = float(model.predict(scaled, verbose=0).ravel()[0])
     prediction = int(probability >= threshold)
 
-    # Risk Tier Logic
+    # Risk Tiers
     if probability < 0.35:
-        tier_class = "assessment-low"
-        tier_icon = "🟢"
-        tier_title = "Low Clinical Risk"
-        tier_desc = "Biomarkers indicate low probability of diabetic pathology under current thresholds."
-        tier_color = "#34d399"
+        card_class = "outcome-low"
+        title = "Low Risk Indication (Negative)"
+        desc = "Current clinical biomarkers indicate low statistical likelihood of diabetes under the active cutoff threshold."
+        val_color = "#059669"
+        status_label = "Negative"
     elif probability < 0.60:
-        tier_class = "assessment-moderate"
-        tier_icon = "🟡"
-        tier_title = "Moderate / Pre-Diabetic Risk"
-        tier_desc = "Biomarkers indicate borderline risk factors. Monitoring lifestyle and dietary measures is recommended."
-        tier_color = "#fbbf24"
+        card_class = "outcome-moderate"
+        title = "Borderline / Pre-Diabetic Indication"
+        desc = "Patient exhibits intermediate risk factors. Follow-up fasting plasma or oral glucose testing is suggested."
+        val_color = "#d97706"
+        status_label = "Borderline"
     else:
-        tier_class = "assessment-high"
-        tier_icon = "🔴"
-        tier_title = "High Clinical Risk"
-        tier_desc = "Biomarkers suggest elevated probability of diabetes. Formal medical consultation is strongly advised."
-        tier_color = "#f87171"
+        card_class = "outcome-high"
+        title = "Elevated Risk Indication (Positive)"
+        desc = "Biomarkers reflect substantial risk characteristics. Formal laboratory evaluation and clinical consultation advised."
+        val_color = "#dc2626"
+        status_label = "Positive"
 
-    # Assessment Card HTML
     st.markdown(f"""
-    <div class="assessment-card {tier_class}">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <span style="font-size: 1.8rem;">{tier_icon}</span>
-                <span style="font-size: 1.5rem; font-weight: 800; color: {tier_color}; letter-spacing: -0.01em;">
-                    {tier_title}
-                </span>
-            </div>
-            <span style="font-size: 0.85rem; padding: 0.3rem 0.8rem; border-radius: 9999px; background: rgba(255,255,255,0.08); color: #cbd5e1;">
-                Cutoff: {threshold * 100:.0f}%
-            </span>
+    <div class="outcome-card {card_class}">
+        <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem;">
+            {title}
         </div>
-        <p style="color: #cbd5e1; margin: 0; font-size: 1rem; line-height: 1.5;">{tier_desc}</p>
+        <div style="font-size: 0.95rem; line-height: 1.5;">
+            {desc}
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Visual Risk Progress Bar
+    # Risk Meter
     clamped_prob = min(max(probability, 0.0), 1.0)
-    st.progress(clamped_prob, text=f"Estimated Diabetes Risk Probability: {clamped_prob * 100:.1f}%")
+    st.progress(clamped_prob, text=f"Estimated Risk Probability: {clamped_prob * 100:.1f}%")
 
-    # 3-Metric Summary Grid
+    # Metrics Summary
     m1, m2, m3 = st.columns(3)
     with m1:
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Predicted Risk</div>
-            <div class="metric-number" style="color: {tier_color};">{probability * 100:.1f}%</div>
+        <div class="stat-card">
+            <div class="stat-label">Risk Probability</div>
+            <div class="stat-value" style="color: {val_color};">{probability * 100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
     with m2:
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Screening Threshold</div>
-            <div class="metric-number" style="color: #94a3b8;">{threshold * 100:.0f}%</div>
+        <div class="stat-card">
+            <div class="stat-label">Decision Threshold</div>
+            <div class="stat-value" style="color: #475569;">{threshold * 100:.0f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
     with m3:
-        status_label = "POSITIVE" if prediction == 1 else "NEGATIVE"
-        status_color = "#f87171" if prediction == 1 else "#34d399"
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Diagnostic Call</div>
-            <div class="metric-number" style="color: {status_color};">{status_label}</div>
+        <div class="stat-card">
+            <div class="stat-label">Screening Call</div>
+            <div class="stat-value" style="color: {val_color};">{status_label}</div>
         </div>
         """, unsafe_allow_html=True)
 
-    # Clinical Biomarker Alert Chips
+    # Clinical Biomarker Observations
     alerts = []
     if glucose >= 126.0:
-        alerts.append(("warning", f"🚨 Fasting Glucose ({glucose:.0f} mg/dL) ≥ 126 mg/dL — Diabetic Range"))
+        alerts.append(("alert", f"Fasting Glucose ({glucose:.0f} mg/dL) meets diabetic range criteria (≥ 126 mg/dL)"))
     elif glucose >= 100.0:
-        alerts.append(("info", f"⚠️ Fasting Glucose ({glucose:.0f} mg/dL) 100–125 mg/dL — Prediabetic Range"))
+        alerts.append(("warn", f"Fasting Glucose ({glucose:.0f} mg/dL) falls within pre-diabetic range (100–125 mg/dL)"))
 
     if bmi >= 30.0:
-        alerts.append(("warning", f"🚨 BMI ({bmi:.1f} kg/m²) ≥ 30.0 — Clinical Obesity"))
+        alerts.append(("alert", f"BMI ({bmi:.1f} kg/m²) indicates clinical obesity (threshold: ≥ 30.0)"))
     elif bmi >= 25.0:
-        alerts.append(("info", f"⚠️ BMI ({bmi:.1f} kg/m²) 25.0–29.9 — Overweight Range"))
+        alerts.append(("warn", f"BMI ({bmi:.1f} kg/m²) falls in the overweight range (25.0–29.9)"))
 
     if blood_pressure >= 90.0:
-        alerts.append(("warning", f"🚨 Diastolic BP ({blood_pressure:.0f} mm Hg) ≥ 90 mm Hg — Stage 2 Hypertension"))
+        alerts.append(("alert", f"Diastolic Blood Pressure ({blood_pressure:.0f} mm Hg) indicates Stage 2 Hypertension"))
     elif blood_pressure >= 80.0:
-        alerts.append(("info", f"⚠️ Diastolic BP ({blood_pressure:.0f} mm Hg) 80–89 mm Hg — Stage 1 Hypertension"))
+        alerts.append(("warn", f"Diastolic Blood Pressure ({blood_pressure:.0f} mm Hg) indicates Stage 1 Hypertension"))
 
     if alerts:
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("##### 🔍 Biomarker Highlight Signals")
-        chip_html = ""
+        st.markdown("##### Clinical Observations")
         for level, msg in alerts:
-            css_class = "chip-warning" if level == "warning" else "chip-info"
-            chip_html += f'<div class="{css_class}">{msg}</div>'
-        st.markdown(chip_html, unsafe_allow_html=True)
+            bg = "#fef2f2" if level == "alert" else "#fffbeb"
+            border = "#fecaca" if level == "alert" else "#fef3c7"
+            color = "#991b1b" if level == "alert" else "#92400e"
+            icon = "🔴" if level == "alert" else "🟡"
+            st.markdown(f"""
+            <div style="background-color: {bg}; border: 1px solid {border}; color: {color}; padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.88rem; margin-bottom: 0.4rem;">
+                {icon} {msg}
+            </div>
+            """, unsafe_allow_html=True)
